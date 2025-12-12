@@ -21,7 +21,8 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-xl shadow">
-      <h2 className="text-2xl font-bold mb-4">Registrierung</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-900">Registrierung</h2>
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
@@ -29,31 +30,37 @@ export default function RegisterPage() {
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           required
-          className="border p-2 rounded"
+          className="border p-3 rounded text-gray-900 placeholder-gray-600"
         />
+
         <input
           type="email"
           placeholder="E-Mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 rounded"
+          className="border p-3 rounded text-gray-900 placeholder-gray-600"
         />
+
         <input
           type="password"
           placeholder="Passwort"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="border p-2 rounded"
+          className="border p-3 rounded text-gray-900 placeholder-gray-600"
         />
+
         <button
           type="submit"
-          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white p-3 rounded hover:bg-blue-700 font-semibold"
         >
           Registrieren
         </button>
       </form>
-      {message && <p className="mt-4 text-center">{message}</p>}
+
+      {message && (
+        <p className="mt-4 text-center text-gray-800 font-medium">{message}</p>
+      )}
     </div>
   );
 }

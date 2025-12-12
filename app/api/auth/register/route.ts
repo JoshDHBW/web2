@@ -1,30 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db } from "@/db/client";
+import { account } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
     const { login, password, email } = await req.json();
 
-    // Prüfen, ob der Benutzer schon existiert
-    const existing = await prisma.account.findUnique({ where: { login } });
-    if (existing) {
-      return NextResponse.json({ error: "Benutzer existiert bereits" }, { status: 400 });
-    }
+    if (!login || !password)
+      return NextResponse.json({ error: "Login und Passwort sind erforderlich" }, { status: 400 });
 
-    // Passwort hashen
+    const existing = await db.select().from(account).where(eq(account.login, login));
+    if (existing.length > 0)
+      return NextResponse.json({ error: "Benutzername existiert bereits" }, { status: 400 });
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Benutzer erstellen
-    const user = await prisma.account.create({
-      data: {
-        login,
-        password: hashedPassword,
-        email,
-      },
+    // Insert durchführen
+    await db.insert(account).values({
+      login,
+      password: hashedPassword,
+      email: email || null,
     });
+
+    // Neue Zeile direkt abfragen
+    const [user] = await db.select().from(account).where(eq(account.login, login));
 
     return NextResponse.json({ message: "Registrierung erfolgreich", userId: user.id });
   } catch (err) {
