@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id       Int     @id @map("id") @default(autoincrement())
+  login    String  @unique
+  password String
+  email    String?
+  reg_date DateTime @map("reg_date") @default(now())
+  // weitere Felder der Metin2 Tabelle optional
+}
